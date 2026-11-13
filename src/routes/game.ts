@@ -23,3 +23,30 @@ gameRouter.get("/question", (_req, res) => {
 
     res.json(toPublic(question));
 });
+
+gameRouter.post("/answer", (req, res) => {
+    const { questionId, answerIndex } = req.body ?? {};
+
+    if (!Number.isInteger(questionId) || !Number.isInteger(answerIndex)) {
+        res.status(400).json({ error: "questionId and answerIndex must be integers" });
+        return;
+    }
+
+    const question = store.questions.find((item) => item.id === questionId);
+
+    if (!question) {
+        res.status(404).json({ error: "Question not found" });
+        return;
+    }
+
+    const player: Player = res.locals.player;
+
+    if (player.answered.includes(questionId)) {
+        res.status(409).json({ error: "Question already answered" });
+        return;
+    }
+
+    player.answered.push(questionId);
+
+    res.json({ accepted: true });
+});
