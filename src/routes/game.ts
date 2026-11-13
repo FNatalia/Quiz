@@ -46,7 +46,14 @@ gameRouter.post("/answer", (req, res) => {
         return;
     }
 
+    const correct = answerIndex === question.correctIndex;
+
+    if (correct) {
+        player.score += 10;
+    }
+
     player.answered.push(questionId);
 
-    res.json({ accepted: true });
+    res.json({ correct, correctIndex: question.correctIndex, score: player.score });
+
 });
