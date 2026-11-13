@@ -21,7 +21,7 @@ playersRouter.get("/", (_req, res) => {
 });
 
 playersRouter.get("/leaderboard", json(), (_req, res) => {
-    const limit = parseInt(_req.query.limit as string) || 10;
+    const limit = Math.min(parseInt(_req.query.limit as string) || 10, 50);
     const sortedPlayers = [...store.players].sort((a, b) => b.score - a.score);
     res.json(sortedPlayers);
 });
