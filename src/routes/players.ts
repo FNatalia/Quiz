@@ -20,6 +20,12 @@ playersRouter.get("/", (_req, res) => {
     res.json(store.players);
 });
 
+playersRouter.get("/leaderboard", json(), (_req, res) => {
+    const limit = parseInt(_req.query.limit as string) || 10;
+    const sortedPlayers = [...store.players].sort((a, b) => b.score - a.score);
+    res.json(sortedPlayers);
+});
+
 playersRouter.get("/:id", (req, res) => {
     const playerId = parseInt(req.params.id, 10);
     const player = store.players.find(p => p.id === playerId);
