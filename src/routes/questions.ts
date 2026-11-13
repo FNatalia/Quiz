@@ -46,3 +46,16 @@ questionsRouter.post("/", (req, res, next) => {
 
   res.status(201).json(toPublic(question));
 });
+
+questionsRouter.delete("/:id", (req, res, next) => {
+  const id = Number(req.params.id);
+  const index = store.questions.findIndex((question) => question.id === id);
+
+  if (index === -1) {
+    next(new HttpError(404, "Question not found"));
+    return;
+  }
+
+  store.questions.splice(index, 1);
+  res.status(204).end();
+});
