@@ -7,10 +7,12 @@ import { playersRouter } from "./routes/players";
 import { questionsRouter } from "./routes/questions";
 import { requestLogger } from "./middleware/requestLogger";
 import { statsRouter } from "./routes/stats";
+import {requestId} from "./middleware/requestId";
 
 export const app = express();
 
 app.use(express.json());
+app.use(requestId);
 app.use(requestLogger);
 
 app.get("/health", (_req, res) => {

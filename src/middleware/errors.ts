@@ -1,17 +1,19 @@
 import { ErrorRequestHandler, RequestHandler } from "express";
 import { HttpError } from "../httpErrot";
 
-export const notFound: RequestHandler = (req, res, next) =>{
+export const notFound: RequestHandler = (req, _res, next) =>{
   const message = `Route ${req.method} ${req.path} not found`;
   next(new HttpError(404, message));
 };
 
-export const errorHandler: ErrorRequestHandler = (err, req, res) => {
+export const errorHandler: ErrorRequestHandler = (err, _req, res,_next) => {
+  const reqId = res.locals.requestId;
   if (err instanceof HttpError) {
     res.status(err.status).json({
       error: {
         message: err.message,
-        details: err.details
+        details: err.details,
+        requestId: reqId,
       }
     });
     return;
@@ -21,7 +23,8 @@ export const errorHandler: ErrorRequestHandler = (err, req, res) => {
     res.status(400).json({
       error: {
         message: 'invalid JSON',
-        details: err.message
+        details: err.message,
+        requestId: reqId,
       }
     })
     return;
@@ -30,7 +33,8 @@ export const errorHandler: ErrorRequestHandler = (err, req, res) => {
   res.status(500).json({
     error:{
       message: 'Internal Server Error',
-      details: undefined
+      details: undefined,
+      requestId: reqId,
     }
   });
 };
